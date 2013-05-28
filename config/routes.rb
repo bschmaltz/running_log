@@ -1,4 +1,6 @@
 RunningLog::Application.routes.draw do
+  get "users/new"
+
   root to: 'home_and_info_pages#home'
   match '/help',    to: 'home_and_info_pages#help'
   match '/about',   to: 'home_and_info_pages#about'
