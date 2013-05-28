@@ -1,4 +1,10 @@
 RunningLog::Application.routes.draw do
+  root to: 'home_and_info_pages#home'
+  match '/help',    to: 'home_and_info_pages#help'
+  match '/about',   to: 'home_and_info_pages#about'
+  match '/contact', to: 'home_and_info_pages#contact'
+  match '/about', to: 'home_and_info_pages#about'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
