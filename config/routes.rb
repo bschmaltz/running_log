@@ -1,11 +1,19 @@
 RunningLog::Application.routes.draw do
-  get "users/new"
+    resources :users
+    resources :sessions, only: [:new, :create, :destroy]
+    resources :microposts, only: [:create, :destroy]
+    resources :comments, only: [:create, :destroy]
 
-  root to: 'home_and_info_pages#home'
-  match '/help',    to: 'home_and_info_pages#help'
-  match '/about',   to: 'home_and_info_pages#about'
-  match '/contact', to: 'home_and_info_pages#contact'
-  match '/about', to: 'home_and_info_pages#about'
+    root to: 'home_and_info_pages#home'
+    
+    match '/signup',  to: 'users#new'
+    match '/signin',  to: 'sessions#new'
+    match '/signout', to: 'sessions#destroy', via: :delete
+    
+    match '/help',    to: 'home_and_info_pages#help'
+    match '/about',   to: 'home_and_info_pages#about'
+    match '/contact', to: 'home_and_info_pages#contact'
+
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

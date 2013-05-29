@@ -1,3 +1,27 @@
 // Place all the styles related to the home_and_info_pages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.wrapper{
+  position: fixed;
+  top: 40%;
+  color: #FFF;
+  width: 940px;
+}
+.signin {
+  background-color: rgba(0,0,0,.5);
+  border-radius: 10px;
+  vertical-align: middle;
+  float: right;
+  width: 200px;
+  height: 265px;
+  padding-left: 40px;
+  padding-right: 50px;
+}
+
+.welcome {
+	text-align: left;
+  vertical-align: middle;
+  float: left;
+  width: 600px;
+}
