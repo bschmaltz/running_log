@@ -1,0 +1,355 @@
+// This is a manifest file that'll be compiled into application.js, which will include all the files
+// listed below.
+//
+// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
+// or vendor/assets/javascripts of plugins, if any, can be referenced here using a relative path.
+//
+// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
+// the compiled file.
+//
+// WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
+// GO AFTER THE REQUIRES BELOW.
+//
+//= require jquery
+//= require jquery_ujs
+//= require bootstrap
+//= require_tree .
+jQuery.ajaxSetup({ 
+  'beforeSend': function(xhr) {xhr.setRequestHeader("Accept", "text/javascript")}
+})
+
+jQuery.fn.submitWithAjax = function() {
+  this.submit(function() {
+    $.post(this.action, $(this).serialize(), null, "script");
+    $('.modal').modal('hide');
+    return false;
+  })
+  return this;
+};
+
+$(document).ready(function() {
+	/*$("#graph_data").load("graph_data.html.erb");*/
+	/* ajax */
+	$("#new_workout").submitWithAjax();
+	/*
+	$('#submit_log_btn').attr("disabled", "disabled");
+	$('#duration_field').keyup(function(){
+		if($(this).val() != ''){
+			$('#submit_log_btn').removeAttr('disabled');
+		}else{
+			$('#submit_log_btn').attr("disabled", "disabled");
+			$('#duration_field_error').html("must be a number, colon, then number");
+		}
+	});
+
+	$('#distance_field').keyup(function(){
+		if($(this).val() != ''){
+			$('#submit_log_btn').removeAttr('disabled');
+		}else{
+			$('#submit_log_btn').attr("disabled", "disabled");
+			$('#duration_field_error').html("must be an integer or decimal");
+		}
+	});
+	*/
+
+	/* slider js */
+	$("#effort_value").hide();
+	$("#effort_label").html("Effort: normal");
+
+	$("#slider1").change(function () {                    
+	  var newValue = $('#slider1').val();
+	  $("#effort_value").html(newValue);
+	  if(newValue==1){
+	  	$("#effort_label").html("Effort: dngaf");
+	  }else if(newValue==2){
+	  	$("#effort_label").html("Effort: easy");
+	  }else if(newValue==3){
+	  	$("#effort_label").html("Effort: normal");
+	  }else if(newValue==4){
+	  	$("#effort_label").html("Effort: hard");
+	  } else {
+	  	$("#effort_label").html("Effort: almost died");
+	  }
+	});
+
+	/* weather select */
+	var selected=0;
+	$(".weather_icon").find("img").addClass("icon");
+	$($(".weather_icon").find(":radio")[0]).attr('checked', true);
+	$($(".icon")[0]).attr("src", "/assets/icons/icon_sunny.png");
+
+	$(".icon").hover(function () {
+		if($(".icon").index($(this)) != selected)
+        	$(this).attr("src", toggle_icon($(this).attr("src")));
+    }, function () {
+		if($(".icon").index($(this)) != selected)
+        	$(this).attr("src", toggle_icon($(this).attr("src")));
+    });
+
+    $(".icon").click(function () {
+    	if($(".icon").index($(this)) != selected){
+	    	$($(".icon")[selected]).attr("src", toggle_icon($($(".icon")[selected]).attr("src")));
+	    	selected = $(".icon").index($(this));
+	    	$(".weather_icon").find(":radio").attr('checked', false);
+	        $(this).parent().find(":radio").attr('checked', true);
+	    }
+    });
+
+    function toggle_icon(icon_url){
+    	if(icon_url.substring(icon_url.length-9)=="_grey.png"){
+    		return icon_url.substring(0, icon_url.length-9)+".png";
+    	}else{
+    		//alert("grey now");
+    		return icon_url.substring(0, icon_url.length-4)+"_grey.png";
+    	}
+    }
+    /* graph */
+    var weekly_distances = stringToFloats($('#weekly_distance').val());
+    var weekly_durations = stringToFloats($('#weekly_duration').val());
+    $("#weekly_distance_graph").highcharts({
+    	chart: {
+    		type: 'column'
+	      },
+	      title: {
+	      	text: ''
+	      },
+	      xAxis: {
+	        type: "datetime"
+	    },
+	    yAxis: {
+	        title: {
+	            text: "Miles"
+	        }
+	    },
+	    plotOptions: {
+	        bar: {
+	            dataLabels: {
+	                enabled: true
+	            }
+	        }
+	    },
+	    credits: {
+	        enabled: false
+	    },
+	    series: [{
+	    	showInLegend: false,
+	    	pointInterval: <%= 1.day * 1000 %>,
+      		pointStart: <%= 7.days.ago.at_midnight.to_i * 1000 %>,
+      		data: weekly_distances
+	    }]
+    });
+
+    var weekly_paces = [];
+    for(var i=0; i<weekly_distances.length; i++){
+    	if(weekly_distances[i]!=0)
+    		weekly_paces[i]=weekly_durations[i]/60/weekly_distances[i];
+    	else
+    		weekly_paces[i]=0;
+    }
+    $("#weekly_pace_graph").highcharts({
+    	chart: {
+    		type: 'column'
+	      },
+	      title: {
+	      	text: ''
+	      },
+	      xAxis: {
+	        type: "datetime"
+	    },
+	    yAxis: {
+	        title: {
+	            text: "minutes/mile"
+	        }
+	    },
+	    plotOptions: {
+	        bar: {
+	            dataLabels: {
+	                enabled: true
+	            }
+	        }
+	    },
+	    credits: {
+	        enabled: false
+	    },
+	    series: [{
+	    	showInLegend: false,
+	    	pointInterval: <%= 1.day * 1000 %>,
+      		pointStart: <%= 7.days.ago.at_midnight.to_i * 1000 %>,
+      		color: 'green',
+      		data: weekly_paces
+	    }]
+    });
+
+    var weekly_speeds = [];
+    for(var i=0; i<weekly_distances.length; i++){
+    	if(weekly_durations!=0)
+    		weekly_speeds[i]=weekly_distances[i]/(weekly_durations[i]/360);
+    	else
+    		weekly_speeds[i]=0;
+    }
+    $("#weekly_speed_graph").highcharts({
+    	chart: {
+    		type: 'column'
+	      },
+	      title: {
+	      	text: ''
+	      },
+	      xAxis: {
+	        type: "datetime"
+	    },
+	    yAxis: {
+	        title: {
+	            text: "miles/hour"
+	        }
+	    },
+	    plotOptions: {
+	        bar: {
+	            dataLabels: {
+	                enabled: true
+	            }
+	        }
+	    },
+	    credits: {
+	        enabled: false
+	    },
+	    series: [{
+	    	showInLegend: false,
+	    	pointInterval: <%= 1.day * 1000 %>,
+      		pointStart: <%= 7.days.ago.at_midnight.to_i * 1000 %>,
+      		color: 'purple',
+      		data: weekly_speeds
+	    }]
+    });
+
+
+    var monthly_distances = stringToFloats($('#monthly_distance').val());
+    var monthly_durations = stringToFloats($('#monthly_duration').val());
+    $("#monthly_distance_graph").highcharts({
+    	chart: {
+    		type: 'line'
+	      },
+	      title: {
+	      	text: ''
+	      },
+	      xAxis: {
+	        type: "datetime"
+	    },
+	    yAxis: {
+	        title: {
+	            text: "Miles"
+	        }
+	    },
+	    plotOptions: {
+	        bar: {
+	            dataLabels: {
+	                enabled: true
+	            }
+	        }
+	    },
+	    credits: {
+	        enabled: false
+	    },
+	    series: [{
+	    	showInLegend: false,
+	    	pointInterval: <%= 1.day * 1000 %>,
+      		pointStart: <%= 1.month.ago.at_midnight.to_i * 1000 %>,
+      		data: monthly_distances
+	    }]
+    });
+
+    var monthly_paces = [];
+    for(var i=0; i<monthly_distances.length; i++){
+    	if(monthly_distances[i]!=0)
+    		monthly_paces[i]=monthly_durations[i]/60/monthly_distances[i];
+    	else
+    		monthly_paces[i]=0;
+    }
+    $("#monthly_pace_graph").highcharts({
+    	chart: {
+    		type: 'line'
+	      },
+	      title: {
+	      	text: ''
+	      },
+	      xAxis: {
+	        type: "datetime"
+	    },
+	    yAxis: {
+	        title: {
+	            text: "minutes/mile"
+	        }
+	    },
+	    plotOptions: {
+	        bar: {
+	            dataLabels: {
+	                enabled: true
+	            }
+	        }
+	    },
+	    credits: {
+	        enabled: false
+	    },
+	    series: [{
+	    	showInLegend: false,
+	    	pointInterval: <%= 1.day * 1000 %>,
+      		pointStart: <%= 1.month.ago.at_midnight.to_i * 1000 %>,
+      		color: 'green',
+      		data: monthly_paces
+	    }]
+    });
+
+    var monthly_speeds = [];
+    for(var i=0; i<monthly_distances.length; i++){
+    	if(monthly_durations[i]!=0)
+    		monthly_speeds[i]=monthly_distances[i]/(monthly_durations[i]/360);
+    	else
+    		monthly_speeds[i]=0;
+    }
+    $("#monthly_speed_graph").highcharts({
+    	chart: {
+    		type: 'line'
+	      },
+	      title: {
+	      	text: ''
+	      },
+	      xAxis: {
+	        type: "datetime"
+	    },
+	    yAxis: {
+	        title: {
+	            text: "miles/hour"
+	        }
+	    },
+	    plotOptions: {
+	        bar: {
+	            dataLabels: {
+	                enabled: true
+	            }
+	        }
+	    },
+	    credits: {
+	        enabled: false
+	    },
+	    series: [{
+	    	showInLegend: false,
+	    	pointInterval: <%= 1.day * 1000 %>,
+      		pointStart: <%= 1.month.ago.at_midnight.to_i * 1000 %>,
+      		color: 'purple',
+      		data: monthly_speeds
+	    }]
+    });
+    function stringToFloats(str){
+    	var res = [];
+    	var arrStr = str.replace("[","").replace("]","").split(', ');
+    	for(var i=0; i<$(arrStr).length; i++){
+    		res[i] = parseFloat(arrStr[i]);
+    	}
+    	return res;
+    }
+
+    $(".popover").popover({ title: 'Look! A bird!', content: "hi", html:true });​​​
+
+})
+
+
+

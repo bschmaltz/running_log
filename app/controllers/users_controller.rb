@@ -43,6 +43,8 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
+    @workouts  = Workout.where("user_id="+params[:id])
+    @date = params[:month] ? Date.parse(params[:month]) : Date.today
   end
 
   private

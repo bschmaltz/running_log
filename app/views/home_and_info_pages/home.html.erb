@@ -1,32 +1,26 @@
-
 <% provide(:title, 'Home') %>
-<% if signed_in? %>
-	<h1>You are signed in and this the home pages</h1>
-<% else%>
-  <div class="wrapper">
-		<div id="bg">
-			<img src="assets/login_bg1.jpg" alt="">
-		</div>
-		<div class="welcome">
-			<h1>Welcome to Running Log</h1>
-			<p class="textbox">
-			  Set your goals, log your runs, veiw your progress, and share it all with people you care about.
-			</p>
-		</div>
-		<div class="signin">
-			<h3>Sign in</h3>
-		    <%= form_for(:session, url: sessions_path) do |f| %>
-
-		      <%= f.label :email %>
-		      <%= f.text_field :email %>
-
-		      <%= f.label :password %>
-		      <%= f.password_field :password %>
-
-		      <%= f.submit "Sign in", class: "btn btn-large btn-primary" %>
-		    <% end %>
-
-		    <p>New user? <%= link_to "Sign up now!", signup_path %></p>
-		</div>
+<div class="wrapper">
+	<div id="bg">
+		<img src="assets/login_bg1.jpg" alt="">
 	</div>
-<% end %>
+	<div class="welcome">
+		<h1>Welcome to Running Log</h1>
+		<p class="textbox">
+		  Set your goals, log your runs, veiw your progress, and share it all with people you care about.
+		</p>
+	</div>
+	<div class="signin">
+		<h3>Sign in</h3>
+	    <%= form_for(:session, url: sessions_path) do |f| %>
+	      <%= f.label :email %>
+	      <%= f.text_field :email %>
+
+	      <%= f.label :password %>
+	      <%= f.password_field :password %>
+
+	      <%= f.submit "Sign in", class: "btn btn-large btn-primary" %>
+	    <% end %>
+
+	    <p>New user? <%= link_to "Sign up now!", signup_path %></p>
+	</div>
+</div>

@@ -47,6 +47,19 @@ textarea {
   }
 }
 
+.wrapper{
+  color: #FFF;
+  width: 940px;
+  margin-top: 200px;
+}
+
+#user_info{
+  display: block;
+  height: 100px;
+}
+#log_btn{
+  float: right;
+}
 /* typography */
 
 h1, h2, h3, h4, h5, h6 {
@@ -72,6 +85,21 @@ p {
   line-height: 1.7em;
 }
 
+/* users index */
+
+.users {
+  list-style: none;
+  margin: 0;
+  li {
+    overflow: auto;
+    padding: 10px 0;
+    border-top: 1px solid $grayLighter;
+    &:last-child {
+      border-bottom: 1px solid $grayLighter;
+    }
+  }
+}
+
 
 /* header */
 
@@ -94,10 +122,16 @@ p {
 /* footer */
 
 footer {
-  /*background-color: black;*/
+  /*background-color: black;
   width: 940px;
-  position: fixed;  
-  bottom: 0px;
+  height: 100px;
+  position:relative;
+  */
+  margin-top: 80px;
+  margin-left: 10%;
+  margin-right: 10%;
+  width: 940px;
+  height: 100px;
   color: rgba(255,255,255,.25);
   a {
     color: $gray;
@@ -175,9 +209,105 @@ input {
   @extend .error;
 }
 
+.workout_inputs{
+  input{
+    width: 200px;
+  }
+
+  textarea{
+    width: 400px;
+    height: 150px;
+  }
+
+  select, .uneditable-input {
+    width: 105px;
+  }
+}
 
 /* homepage */
 .container {
   margin-left: 10%;
   margin-right: 10%;
+}
+
+.weather_icon{
+  input{
+    display: none;
+  }
+  label{
+    display: inline;
+  }
+  img{
+    height: 30px;
+    padding-right: 10px;
+  }
+}
+
+.graph{
+  height: 400px;
+  width: 940px;
+}
+
+
+/* calendar */
+#calendar table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#calendar td, #calendar th {
+  font-family: "Lucida Grande",arial,helvetica,sans-serif;
+  font-size: 10px;
+  padding: 6px;
+  border: 1px solid #999;
+}
+
+#calendar th {
+  background: #DDD;
+  color: #666;
+  text-align: center;
+  width: 14.2857142857143%;
+}
+
+#calendar td {
+  background: #FFF;
+  color: #777;
+  height: 80px;
+  vertical-align: top;
+  font-size: 16px;
+}
+
+#calendar .notmonth {
+  color: #CCC;
+}
+
+#calendar #month {
+  margin: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+#calendar #month a, #calendar #month a:hover {
+  text-decoration: none;
+  padding: 0 10px;
+  color: #999;
+}
+
+#calendar .today {
+  background-color: #D7F2FF;
+}
+
+#calendar ul {
+  margin: 0;
+  margin-top: 5px;
+  padding: 0;
+  list-style: none;
+}
+
+#calendar li {
+  margin: 0;
+  padding: 0;
+  font-size: 11px;
+  text-align: center;
 }

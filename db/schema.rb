@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130516132451) do
+ActiveRecord::Schema.define(:version => 20130529125027) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
@@ -25,5 +25,20 @@ ActiveRecord::Schema.define(:version => 20130516132451) do
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["remember_token"], :name => "index_users_on_remember_token"
+
+  create_table "workouts", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.date     "workout_date"
+    t.string   "review"
+    t.integer  "effort"
+    t.float    "duration"
+    t.string   "weather"
+    t.float    "distance"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "workouts", ["user_id", "created_at"], :name => "index_workouts_on_user_id_and_created_at"
 
 end

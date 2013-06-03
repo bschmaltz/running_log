@@ -1,11 +1,158 @@
-<% provide(:title, @user.name) %>
-<div class="row">
-  <aside class="span4">
-    <section>
-      <h1>
-        <%= gravatar_for @user %>
-        <%= @user.name %>
-      </h1>
-    </section>
-  </aside>
+<div id="user_info">
+	<div id="username"><%= @user.name %></div>
+	<div id="userpic"><%= gravatar_for @user %></div>
+<% if(current_user?(@user)) %>
+	<a href="#myModal" role="button" class="btn btn-info" data-toggle="modal" id="log_btn">LOG A WORKOUT</a>
+	<div class="workout_form">
+		<%= simple_form_for Workout.new, :id => 'new_workout' do |f| %>
+	 	<%= render 'shared/error_messages', object: f.object %>
+
+		<!-- Modal -->
+		<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		    <h3 id="myModalLabel">New Log Entry</h3>
+		  </div>
+	  	<div class="modal-body">
+			  <div class="workout_inputs">
+			    <%= f.input :name, placeholder: "Workout name..." %>
+
+			    <%= f.input :workout_date, :start_year => 1940 %>
+
+				  <%= f.input :duration, id: "duration_field" %><span id="duration_field_error"></span>
+
+			    <%= f.input :distance, placeholder: "in miles...", id: "distance_field" %><span id="distance_field_error"></span>
+
+			    <%= f.label :effort, id: "effort_label" %><text id="effort_value">3</text>
+			    <%= f.range_field :effort, :min=>1, :max=>5, :class=>"slide", :id=>"slider1"%>
+
+			    <%= f.label "Weather" %>
+			    <div id="weather_icons">
+				<%= f.collection_radio_buttons(:weather, [["Sunny", "icon_sunny_grey"], ["Cloudy", "icon_cloudy_grey"], ["Rainy", "icon_rainy_grey"], ["Stormy", "icon_stormy_grey"]],
+                             :first, :last,
+                             :item_wrapper_class => 'weather_icon',
+                             ) { |weather| weather.label { image_tag("/assets/icons/#{weather.text}.png") + weather.radio_button } }%>
+                </div>
+
+			    <%= f.label :review %>
+			    <%= f.text_area :review, placeholder: "How did it go?" %>
+			    
+			  </div>
+			</div>
+			<div class="modal-footer">
+		    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		    <%= f.submit "Log it!", class: "btn btn-large btn-primary", id: "submit_log_btn" %>
+		  </div>
+		</div>
+		<% end %>
+	</div>
+<% end %>
+</div>
+<div id="graph_data">
+  <%= hidden_field_tag :yolo, ((7.days.ago.to_date..Date.today).map { |date| Workout.total_miles_on(date, params[:id]).to_f}.inspect), :id => 'weekly_distance' %>
+  <%= hidden_field_tag :yolo, ((7.days.ago.to_date..Date.today).map { |date| Workout.total_duration_on(date, params[:id]).to_f}.inspect), :id => 'weekly_duration' %>
+  <%= hidden_field_tag :yolo, ((1.month.ago.to_date..Date.today).map { |date| Workout.total_miles_on(date, params[:id]).to_f}.inspect), :id => 'monthly_distance' %>
+  <%= hidden_field_tag :yolo, ((1.month.ago.to_date..Date.today).map { |date| Workout.total_duration_on(date, params[:id]).to_f}.inspect), :id => 'monthly_duration' %>
+  <%= hidden_field_tag :yololo, params[:id], :id => 'user_id_field' %>
+</div>
+
+<div id="calendar">
+  <h2 id="month">
+    <%= link_to "<", :month => (@date.beginning_of_month-1).strftime("%Y-%m") %>
+    <%=h @date.strftime("%B %Y") %>
+    <%= link_to ">", :month => (@date.end_of_month+1).strftime("%Y-%m") %>
+  </h2>
+  <%= calendar_for @workouts, :year => @date.year, :month => @date.month do |calendar| %>
+    <%= calendar.head('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday') %>
+    <% calendar.day(:day_method => :workout_date) do |date, workouts| %>
+      <%= date.day %>
+      <ul>
+        <% for workout in workouts %>
+          <li>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  <% end %>
+</div>
+
+
+<h2>Weekly Summary</h2>
+<div class="accordion" id="accordion1">
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#weekly_distance_panel">
+        Distance
+      </a>
+    </div>
+    <div id="weekly_distance_panel" class="accordion-body collapse in">
+      <div class="accordion-inner">
+        <div class="graph" id="weekly_distance_graph"></div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#weekly_pace_panel">
+        Pace
+      </a>
+    </div>
+    <div id="weekly_pace_panel" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <div class="graph" id="weekly_pace_graph"></div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#weekly_speed_panel">
+        Speed
+      </a>
+    </div>
+    <div id="weekly_speed_panel" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <div class="graph" id="weekly_speed_graph"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Monthly Summary</h2>
+<div class="accordion" id="accordion2">
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+        Distance
+      </a>
+    </div>
+    <div id="collapseOne" class="accordion-body collapse in">
+      <div class="accordion-inner">
+        <div class="graph" id="monthly_distance_graph"></div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+        Pace
+      </a>
+    </div>
+    <div id="collapseTwo" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <div class="graph" id="monthly_pace_graph"></div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
+        Speed
+      </a>
+    </div>
+    <div id="collapseThree" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <div class="graph" id="monthly_speed_graph"></div>
+      </div>
+    </div>
+  </div>
 </div>

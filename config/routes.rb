@@ -1,8 +1,7 @@
 RunningLog::Application.routes.draw do
     resources :users
     resources :sessions, only: [:new, :create, :destroy]
-    resources :microposts, only: [:create, :destroy]
-    resources :comments, only: [:create, :destroy]
+    resources :workouts, only: [:create, :destroy]
 
     root to: 'home_and_info_pages#home'
     

@@ -1,0 +1,5 @@
+<%= hidden_field_tag :yolo, ((7.days.ago.to_date..Date.today).map { |date| Workout.total_miles_on(date, params[:id]).to_f}.inspect), :id => 'weekly_distance' %>
+  <%= hidden_field_tag :yolo, ((7.days.ago.to_date..Date.today).map { |date| Workout.total_duration_on(date, params[:id]).to_f}.inspect), :id => 'weekly_duration' %>
+  <%= hidden_field_tag :yolo, ((1.month.ago.to_date..Date.today).map { |date| Workout.total_miles_on(date, params[:id]).to_f}.inspect), :id => 'monthly_distance' %>
+  <%= hidden_field_tag :yolo, ((1.month.ago.to_date..Date.today).map { |date| Workout.total_duration_on(date, params[:id]).to_f}.inspect), :id => 'monthly_duration' %>
+  <%= hidden_field_tag :yololo, params[:id], :id => 'user_id_field' %>

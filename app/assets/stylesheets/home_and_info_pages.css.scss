@@ -2,12 +2,6 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.wrapper{
-  position: fixed;
-  top: 40%;
-  color: #FFF;
-  width: 940px;
-}
 .signin {
   background-color: rgba(0,0,0,.5);
   border-radius: 10px;
@@ -25,3 +19,11 @@
   float: left;
   width: 600px;
 }
+
+h2{
+  padding-top: 20px;
+  padding-bottom: 5px;
+  color: #666;
+  border-bottom: 1px solid;
+}
+
