@@ -2,7 +2,7 @@
 	<div id="username"><%= @user.name %></div>
 	<div id="userpic"><%= gravatar_for @user %></div>
 <% if(current_user?(@user)) %>
-	<a href="#myModal" role="button" class="btn btn-info" data-toggle="modal" id="log_btn">LOG A WORKOUT</a>
+	<a role="button" class="btn btn-info" data-toggle="modal" data-target="#myModal" id="log_btn">LOG A WORKOUT</a>
 	<div class="workout_form">
 		<%= simple_form_for Workout.new, :id => 'new_workout' do |f| %>
 	 	<%= render 'shared/error_messages', object: f.object %>
