@@ -19,9 +19,9 @@
 
 			    <%= f.input :workout_date, :start_year => 1940 %>
 
-				  <%= f.input :duration, id: "duration_field" %><span id="duration_field_error"></span>
+				  <%= f.input :duration, placeholder: "(minutes)", id: "duration_field" %><span id="duration_field_error"></span>
 
-			    <%= f.input :distance, placeholder: "in miles...", id: "distance_field" %><span id="distance_field_error"></span>
+			    <%= f.input :distance, placeholder: "(miles)", id: "distance_field" %><span id="distance_field_error"></span>
 
 			    <%= f.label :effort, id: "effort_label" %><text id="effort_value">3</text>
 			    <%= f.range_field :effort, :min=>1, :max=>5, :class=>"slide", :id=>"slider1"%>
